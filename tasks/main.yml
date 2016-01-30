@@ -1,0 +1,68 @@
+---
+- name: Ensure sudo is installed for RedHat family OSs
+  yum:
+    name: sudo
+    update_cache: yes
+    state: present
+  when: ansible_os_family == 'RedHat'
+
+- name: Ensure sudo is installed for Debian family OSs
+  apt:
+    name: sudo
+    update_cache: yes
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Ensure sudo is installed for SUSE family OSs
+  zypper:
+    name: sudo
+    state: present
+  when: ansible_os_family == 'SUSE'
+
+- name: Ensure the sudoers.d directory is created
+  file:
+    path: /etc/sudoers.d
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
+- name: Ensure the sudoers file is valid and up to date
+  template:
+    src: sudoers.j2
+    dest: /etc/sudoers
+    owner: root
+    group: root
+    mode: 0440
+    validate: visudo -cf %s
+
+- name: Find all existing sudoer specs
+  shell: find /etc/sudoers.d -type f -printf "%f\n"
+  register: existing_sudoer_spec_list
+  changed_when: False
+
+- name: Get a list of all existing sudoer specs
+  set_fact:
+    existing_sudoer_specs: "{{ existing_sudoer_spec_list.stdout_lines }}"
+  changed_when: False
+
+- name: Get a list of all authorized sudoer spec names
+  set_fact:
+    authorized_sudoer_specs: "{{ sudoer_specs | map(attribute='name') | list }}"
+  changed_when: False
+
+- name: Ensure all authorized sudoer specs are properly configured
+  template:
+    src: sudoer_spec.j2
+    dest: "/etc/sudoers.d/{{ item.name }}"
+    owner: root
+    group: root
+    mode: 0440
+    validate: visudo -cf %s
+  with_items: sudoer_specs
+
+- name: Remove sudoers that are not authorized
+  file:
+    path: "/etc/sudoers.d/{{ item }}"
+    state: absent
+  with_items: existing_sudoer_specs | difference(authorized_sudoer_specs)

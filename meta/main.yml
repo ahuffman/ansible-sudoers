@@ -1,0 +1,37 @@
+galaxy_info:
+  author: Tyler Cross
+  description:
+  issue_tracker_url: https://github.com/wtcross/ansible-sudoers/issues
+  license: MIT
+  min_ansible_version: 1.2
+  github_branch: master
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: Fedora
+      versions:
+        - all
+    - name: opensuse
+      versions:
+        - all
+    - name: Amazon
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: SLES
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+
+  galaxy_tags:
+    - sudo
+    - sudoers
+    - admin
+    - system
+
+dependencies: []

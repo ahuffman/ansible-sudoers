@@ -1,0 +1,18 @@
+- hosts: localhost
+  remote_user: root
+
+  vars:
+    test_users:
+      - user1
+      - user2
+      - user3
+
+  pre_tasks:
+    - name: Create a few test users
+      user:
+        name: "{{ item }}"
+        state: present
+      with_items: test_users
+
+  roles:
+    - role: ansible-sudoers

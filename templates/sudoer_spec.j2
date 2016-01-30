@@ -1,0 +1,1 @@
+{{ item.users | to_list | join(',') }} {{ item.hosts | to_list | join(',') }}={% if item.operators is defined and item.operators %}({{ item.operators | to_list | join(',') }}){% endif %} {% if item.tags is defined and item.tags %}{{ item.tags | to_list | join(':') }}: {% endif %}{{ item.commands | to_list | join(',') }}
