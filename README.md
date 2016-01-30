@@ -35,7 +35,7 @@ The following properties are optional:
       runas:
         - name: ROOT
           users:
-            - \#0
+            - '#0'
       host:
         - name: SERVERS
           hosts:
