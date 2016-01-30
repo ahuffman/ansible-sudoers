@@ -1,6 +1,8 @@
 # sudoers
 > An Ansible role for comprehensive management of a sudoers configuration.
 
+[![Build Status](https://travis-ci.org/wtcross/ansible-sudoers.svg?branch=master)](https://travis-ci.org/wtcross/ansible-sudoers)
+
 This role makes it possible to completely define your sudoers configuration with Ansible. All of the following are configurable:
 - defaults
 - aliases
