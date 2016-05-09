@@ -4,9 +4,12 @@
 {% for items in values | to_list | slice(6) %}
 {% if items %}
 Defaults    {{ name }} {% if not loop.first %}+{% endif %}= "{{ items | to_list | join(' ') }}"
-{% endif %}
+{% endif %} 
 {% endfor %}
 {% endfor %}
+{% elif default|first == ':' %}
+Defaults{{ default }}
+
 {% else %}
 Defaults    {{ default }}
 {% endif %}
