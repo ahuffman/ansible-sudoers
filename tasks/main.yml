@@ -59,10 +59,10 @@
     group: root
     mode: 0440
     validate: visudo -cf %s
-  with_items: sudoer_specs
+  with_items: '{{ sudoer_specs }}'
 
 - name: Remove sudoers that are not authorized
   file:
     path: "/etc/sudoers.d/{{ item }}"
     state: absent
-  with_items: existing_sudoer_specs | difference(authorized_sudoer_specs)
+  with_items: "{{ existing_sudoer_specs }} | difference(authorized_sudoer_specs)"
