@@ -65,4 +65,4 @@
   file:
     path: "/etc/sudoers.d/{{ item }}"
     state: absent
-  with_items: "{{ existing_sudoer_specs }} | difference(authorized_sudoer_specs)"
+  with_items: "{{ existing_sudoer_specs | difference(authorized_sudoer_specs) }}"
