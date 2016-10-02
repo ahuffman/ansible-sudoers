@@ -57,6 +57,8 @@ The following properties are optional:
         tags:
           - NOPASSWD
         commands: ADMIN_CMNDS
+        defaults:
+          - '!requiretty'
 
   roles:
     - role: sudoers
@@ -96,6 +98,7 @@ users: string|[string]
 hosts: string|[string]
 operators: string|[string]
 tags: string|[string]
+defaults: string|[string]
 ```
 
 ## Role Variables
