@@ -4,20 +4,20 @@
     name: sudo
     update_cache: yes
     state: present
-  when: ansible_os_family == 'RedHat'
+  when: "{{ ansible_os_family == 'RedHat' }}"
 
 - name: Ensure sudo is installed for Debian family OSs
   apt:
     name: sudo
     update_cache: yes
     state: present
-  when: ansible_os_family == 'Debian'
+  when: "{{ ansible_os_family == 'Debian' }}"
 
 - name: Ensure sudo is installed for SUSE family OSs
   zypper:
     name: sudo
     state: present
-  when: ansible_os_family == 'SUSE'
+  when: "{{ ansible_os_family == 'SUSE' }}"
 
 - name: Ensure the sudoers.d directory is created
   file:
@@ -59,10 +59,10 @@
     group: root
     mode: 0440
     validate: visudo -cf %s
-  with_items: sudoer_specs
+  with_items: "{{ sudoer_specs }}"
 
 - name: Remove sudoers that are not authorized
   file:
     path: "/etc/sudoers.d/{{ item }}"
     state: absent
-  with_items: existing_sudoer_specs | difference(authorized_sudoer_specs)
+  with_items: "{{ existing_sudoer_specs | difference(authorized_sudoer_specs) }}"
