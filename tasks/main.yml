@@ -27,15 +27,6 @@
     mode: 0755
     state: directory
 
-- name: Ensure the sudoers file is valid and up to date
-  template:
-    src: sudoers.j2
-    dest: /etc/sudoers
-    owner: root
-    group: root
-    mode: 0440
-    validate: visudo -cf %s
-
 - name: Find all existing sudoer specs
   shell: find /etc/sudoers.d -type f -printf "%f\n"
   register: existing_sudoer_spec_list
@@ -60,6 +51,15 @@
     mode: 0440
     validate: visudo -cf %s
   with_items: sudoer_specs
+
+- name: Ensure the sudoers file is valid and up to date
+  template:
+    src: sudoers.j2
+    dest: /etc/sudoers
+    owner: root
+    group: root
+    mode: 0440
+    validate: visudo -cf %s
 
 - name: Remove sudoers that are not authorized
   file:
