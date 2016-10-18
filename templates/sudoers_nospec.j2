@@ -1,0 +1,64 @@
+#{{ ansible_managed }}
+
+{% for default in sudoer_defaults %}
+{% if default is mapping %}
+{% for name, values in default.iteritems() %}
+{% for items in values | to_list | slice(6) %}
+{% if items %}
+Defaults    {{ name }} {% if not loop.first %}+{% endif %}= "{{ items | to_list | join(' ') }}"
+{% endif -%} 
+{% endfor %}
+{% endfor %}
+{% elif default|first == ':' %}
+Defaults{{ default }}
+{% else %}
+Defaults    {{ default }}
+{% endif %}
+{% endfor %}
+
+{% if sudoer_aliases.user is defined and sudoer_aliases.user %}
+#User Aliases
+{% for alias in sudoer_aliases.user %}
+{% if alias.comment is defined and alias.comment %}
+#**{{ alias.comment }}
+{% endif %}
+User_Alias {{ alias.name }} = {{ alias.users | join(',') }}
+{% endfor %}
+
+{% endif %}
+{% if sudoer_aliases.runas is defined and sudoer_aliases.runas %}
+#Runas Aliases
+{% for alias in sudoer_aliases.runas %}
+{% if alias.comment is defined and alias.comment %}
+#**{{ alias.comment }}
+{% endif %}
+Runas_Alias {{ alias.name }} = {{ alias.users | join(',') }}
+{% endfor %}
+
+{% endif %}
+{% if sudoer_aliases.host is defined and sudoer_aliases.host %}
+#Host Aliases
+{% for alias in sudoer_aliases.host %}
+{% if alias.comment is defined and alias.comment %}
+#**{{ alias.comment }}
+{% endif %}
+Host_Alias {{ alias.name }} = {{ alias.hosts | join(',') }}
+{% endfor %}
+
+{% endif %}
+{% if sudoer_aliases.command is defined and sudoer_aliases.command %}
+#Command Aliases
+{% for alias in sudoer_aliases.command %}
+{% if alias.comment is defined and alias.comment %}
+#**{{ alias.comment }}
+{% endif %}
+Cmnd_Alias {{ alias.name }} = {{ alias.commands | join(',') }}
+{% endfor %}
+
+{% endif %}
+
+## Allow root to run any commands anywhere
+root	ALL=(ALL) 	ALL
+
+# Include all sudoer specifications
+#includedir /etc/sudoers.d
