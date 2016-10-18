@@ -16,7 +16,7 @@ The top level `/etc/sudoers` file is kept as light as possible. It includes all 
 - `users`: user list or user alias
 - `hosts`: host list or host alias
 - `operators`: operator list or runas alias
-- `commands`: command list or
+- `commands`: command list or command alias
 
 The following properties are optional:
 - `tags`: list of tags (ex: NOPASSWD)
