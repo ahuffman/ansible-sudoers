@@ -1,4 +1,4 @@
-# ahuffman.sudoers
+# wtcross.sudoers
 An Ansible role for configuring the /etc/sudoers file and /etc/sudoers.d files.
 
 This role makes it possible to completely define your sudoers configuration with Ansible. All of the following are configurable:
@@ -9,6 +9,8 @@ This role makes it possible to completely define your sudoers configuration with
   * Hosts
   * Commands
 - specifications
+
+*Tip:* Here's a [great document about sudoers configuration](https://help.ubuntu.com/community/Sudoers)
 
 ## About and Usage
 The top level `/etc/sudoers` file can be kept as light as possible by specifying sudoer_separate_specs: True in either the defaults or your playbook. sudoer_separate_specs is set to True by default. 
@@ -183,8 +185,5 @@ comment: string #procedes the alias with a comment
 [MIT](LICENSE)
 
 ## Author Information
-### Original Author: 
 [Tyler Cross](https://github.com/wtcross)
-
-### Improved By: 
 [Andrew J. Huffman](https://github.com/ahuffman)
