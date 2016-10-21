@@ -2,7 +2,7 @@
 sudoer_aliases: {}
 sudoer_specs: []
 sudoer_defaults:
-  - requiretty
+#  - requiretty
   - "!visiblepw"
   - always_set_home
   - env_reset
@@ -38,3 +38,4 @@ sudoer_defaults:
     - _XKB_CHARSET
     - XAUTHORITY
   - secure_path: /sbin:/bin:/usr/sbin:/usr/bin
+sudoer_separate_specs: True
