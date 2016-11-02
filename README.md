@@ -82,7 +82,7 @@ Defaults:MONITOR_USER    !logfile
 	        commands: ADMIN_CMNDS
 
 	  roles:
-	    - ahuffman.sudoers
+	    - wtcross.sudoers
 
 
 ## Defaults:
