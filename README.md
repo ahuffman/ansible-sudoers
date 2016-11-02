@@ -185,5 +185,5 @@ comment: string #procedes the alias with a comment
 [MIT](LICENSE)
 
 ## Author Information
-[Tyler Cross](https://github.com/wtcross)
-[Andrew J. Huffman](https://github.com/ahuffman)
+[Tyler Cross](https://github.com/wtcross)   
+[Andrew J. Huffman](https://github.com/ahuffman)   
