@@ -86,6 +86,8 @@ Defaults:MONITOR_USER    !logfile
         tags:
           - NOPASSWD
         commands: ADMIN_CMNDS
+        defaults:
+          - '!requiretty'
 
   roles:
     - wtcross.sudoers
@@ -174,6 +176,7 @@ hosts: string|[string]
 operators: string|[string]
 tags: string|[string]
 comment: string #procedes the alias with a comment
+defaults: string|[string]
 
 ## Role Variables
 - `sudoer_aliases`: a dictionary that specifies which aliases to configure

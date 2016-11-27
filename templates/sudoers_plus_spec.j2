@@ -66,6 +66,9 @@ root	ALL=(ALL) 	ALL
 {% if spec.comment is defined %}
 #**{{ spec.comment }}
 {% endif %}
+{% if spec.defaults is defined and spec.defaults %}
+Defaults:{{ spec.users | to_list | join(',') }} {{ spec.defaults | to_list | join(',') }}
+{% endif %}
 {{ spec.users | to_list | join(',') }} {{ spec.hosts | to_list | join(',') }}={% if spec.operators is defined and spec.operators %}({{ spec.operators | to_list | join(',') }}){% endif %} {% if spec.tags is defined and spec.tags %}{{ spec.tags | to_list | join(':') }}: {% endif %}{{ spec.commands | to_list | join(',') }}
 {% endfor %}
 {% endif %}
