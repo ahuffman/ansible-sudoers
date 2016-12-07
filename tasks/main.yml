@@ -27,26 +27,6 @@
     mode: 0755
     state: directory
 
-- name: Ensure the sudoers file is valid and up to date (separate specs)
-  template:
-    src: sudoers_nospec.j2
-    dest: /etc/sudoers
-    owner: root
-    group: root
-    mode: 0440
-    validate: visudo -cf %s
-  when: sudoer_separate_specs == True
-
-- name: Ensure the sudoers file is valid and up to date (specs all in one)
-  template:
-    src: sudoers_plus_spec.j2
-    dest: /etc/sudoers
-    owner: root
-    group: root
-    mode: 0440
-    validate: visudo -cf %s
-  when: "{{ sudoer_separate_specs == False }}"
-
 - name: Find all existing separate sudoer specs
   shell: find /etc/sudoers.d -type f -printf "%f\n"
   register: existing_sudoer_spec_list
@@ -72,6 +52,26 @@
     validate: visudo -cf %s
   with_items: '{{ sudoer_specs }}'
   when: "{{ sudoer_separate_specs == True }}"
+
+- name: Ensure the sudoers file is valid and up to date (separate specs)
+  template:
+    src: sudoers_nospec.j2
+    dest: /etc/sudoers
+    owner: root
+    group: root
+    mode: 0440
+    validate: visudo -cf %s
+  when: sudoer_separate_specs == True
+
+- name: Ensure the sudoers file is valid and up to date (specs all in one)
+  template:
+    src: sudoers_plus_spec.j2
+    dest: /etc/sudoers
+    owner: root
+    group: root
+    mode: 0440
+    validate: visudo -cf %s
+  when: "{{ sudoer_separate_specs == False }}"
 
 - name: Remove separate sudoer specs that are not authorized
   file:
