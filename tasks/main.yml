@@ -28,13 +28,15 @@
     state: directory
 
 - name: Find all existing separate sudoer specs
-  shell: find /etc/sudoers.d -type f -printf "%f\n"
+  find:
+    paths: "/etc/sudoers.d"
+    file_type: file
+    recurse: no
   register: existing_sudoer_spec_list
-  changed_when: False
 
 - name: Get a list of all existing separate sudoer specs
   set_fact:
-    existing_sudoer_specs: "{{ existing_sudoer_spec_list.stdout_lines }}"
+    existing_sudoer_specs: "{{ existing_sudoer_spec_list.files | map(attribute='path') | map('regex_replace','(.*\\/)(.*)','\\2') | list}}"
   changed_when: False
 
 - name: Get a list of all authorized separate sudoer spec names
