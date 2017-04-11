@@ -91,7 +91,7 @@ Defaults:MONITOR_USER    !logfile
             - '!requiretty'
 
   roles:
-    - sudoers
+    - wtcross.sudoers
 ```
 
 ## Defaults:
