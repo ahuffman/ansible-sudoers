@@ -55,39 +55,39 @@ Defaults:MONITOR_USER    !logfile
       user:
             - name: ADMINS
               comment: Group of admin users
-          users:
-            - %admin
+              users:
+                - '%admin'
           runas:
             - name: ROOT
               comment: Root stuff
-          users:
-            - '#0'
+              users:
+                - '#0'
       host:
             - name: SERVERS
               comment: XYZ servers
-          hosts:
-            - 192.168.0.1
-            - 192.168.0.2
+              hosts:
+                - 192.168.0.1
+                - 192.168.0.2
       command:
             - name: ADMIN_CMNDS
               comment: Stuff admins need
               commands:
-            - /usr/sbin/passwd
-            - /usr/sbin/useradd
-            - /usr/sbin/userdel
-            - /usr/sbin/usermod
-            - /usr/sbin/visudo
+                - /usr/sbin/passwd
+                - /usr/sbin/useradd
+                - /usr/sbin/userdel
+                - /usr/sbin/usermod
+                - /usr/sbin/visudo
     sudoer_specs:
       - name: administrators
             comment: Stuff for admins
             users: ADMIN
-        hosts: SERVERS
-        operators: ROOT
-        tags:
-          - NOPASSWD
-        commands: ADMIN_CMNDS
-        defaults:
-          - '!requiretty'
+            hosts: SERVERS
+            operators: ROOT
+            tags:
+              - NOPASSWD
+            commands: ADMIN_CMNDS
+            defaults:
+              - '!requiretty'
 
   roles:
     - wtcross.sudoers
