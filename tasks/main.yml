@@ -4,20 +4,20 @@
     name: sudo
     update_cache: yes
     state: present
-  when: "{{ ansible_os_family == 'RedHat' }}"
+  when: "ansible_os_family == 'RedHat'"
 
 - name: Ensure sudo is installed for Debian family OSs
   apt:
     name: sudo
     update_cache: yes
     state: present
-  when: "{{ ansible_os_family == 'Debian' }}"
+  when: "ansible_os_family == 'Debian'"
 
 - name: Ensure sudo is installed for SUSE family OSs
   zypper:
     name: sudo
     state: present
-  when: "{{ ansible_os_family == 'SUSE' }}"
+  when: "ansible_os_family == 'SUSE'"
 
 - name: Ensure the sudoers.d directory is created
   file:
@@ -53,7 +53,7 @@
     mode: 0440
     validate: visudo -cf %s
   with_items: '{{ sudoer_specs }}'
-  when: "{{ sudoer_separate_specs == True }}"
+  when: "sudoer_separate_specs | bool"
 
 - name: Ensure the sudoers file is valid and up to date (separate specs)
   template:
@@ -63,7 +63,7 @@
     group: root
     mode: 0440
     validate: visudo -cf %s
-  when: sudoer_separate_specs == True
+  when: "sudoer_separate_specs | bool"
 
 - name: Ensure the sudoers file is valid and up to date (specs all in one)
   template:
@@ -73,18 +73,18 @@
     group: root
     mode: 0440
     validate: visudo -cf %s
-  when: "{{ sudoer_separate_specs == False }}"
+  when: "not sudoer_separate_specs | bool"
 
 - name: Remove separate sudoer specs that are not authorized
   file:
     path: "/etc/sudoers.d/{{ item }}"
     state: absent
   with_items: "{{ existing_sudoer_specs | difference(authorized_sudoer_specs) }}"
-  when: "{{ sudoer_separate_specs == True }}"
+  when: "sudoer_separate_specs | bool"
 
 - name: Remove separate sudoer specs if not using separate specs
   file:
     path: "/etc/sudoers.d/{{ item }}"
     state: absent
   with_items: "{{ existing_sudoer_specs }}"
-  when: "{{ sudoer_separate_specs == False }}"
+  when: "not sudoer_separate_specs | bool"
