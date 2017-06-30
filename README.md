@@ -84,8 +84,7 @@ Defaults:MONITOR_USER    !logfile
           users: ADMIN
           hosts: SERVERS
           operators: ROOT
-          tags:
-            - NOPASSWD
+          tags: NOPASSWD
           commands: ADMIN_CMNDS
           defaults:
             - '!requiretty'
