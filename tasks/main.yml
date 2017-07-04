@@ -41,7 +41,7 @@
 
 - name: Get a list of all authorized separate sudoer spec names
   set_fact:
-    authorized_sudoer_specs: "{{ sudoer_specs | map(attribute='name') | list }}"
+    authorized_sudoer_specs: "{{ sudoer_specs | map(attribute='name') | list }} + {{ sudoer_specs_extra | map(attribute='name') | list }}" 
   changed_when: False
 
 - name: Ensure all authorized separate sudoer specs are properly configured
@@ -52,7 +52,7 @@
     group: root
     mode: 0440
     validate: visudo -cf %s
-  with_items: '{{ sudoer_specs }}'
+  with_items: '{{ sudoer_specs }} + {{ sudoer_specs_extra }}'
   when: "sudoer_separate_specs | bool"
 
 - name: Ensure the sudoers file is valid and up to date (separate specs)
