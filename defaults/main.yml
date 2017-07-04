@@ -1,6 +1,7 @@
 ---
 sudoer_aliases: {}
 sudoer_specs: []
+sudoer_specs_extra: []
 sudoer_defaults:
 #  - requiretty
   - "!visiblepw"
