@@ -5,11 +5,12 @@
     - role: ansible-sudoers
       sudoer_rewrite_sudoers_file: true
       sudoer_remove_unauthorized_specs: true
-      sudoers_seperate_specs: true
-      sudoers_defaults:
+      sudoer_separate_specs: True
+      sudoer_defaults:
         - "!visiblepw"
         - always_set_home
         - env_reset
+        - secure_path: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
         - env_keep:
           - COLORS
           - DISPLAY
@@ -40,7 +41,6 @@
           - LINGUAS
           - _XKB_CHARSET
           - XAUTHORITY
-        - secure_path: /sbin:/bin:/usr/sbin:/usr/bin
       sudoer_aliases:
         user:
           - name: ADMINS
