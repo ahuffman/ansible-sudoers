@@ -1,1 +1,22 @@
 *.pyc
+
+# IDE specific
+.idea/
+
+# Bundler
+.bundle
+vendor
+Gemfile.lock
+
+# Ruby
+.ruby-version
+
+# Test-kitchen
+.kitchen/
+.kitchen.local.yml
+
+# Molecule
+.molecule/
+
+# Ansible roles
+.imported_roles/
