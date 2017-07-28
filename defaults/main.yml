@@ -39,3 +39,5 @@ sudoer_defaults:
     - XAUTHORITY
   - secure_path: /sbin:/bin:/usr/sbin:/usr/bin
 sudoer_separate_specs: True
+sudoer_rewrite_sudoers_file: False
+sudoer_remove_unauthorized_specs: False
