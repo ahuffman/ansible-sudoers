@@ -4,8 +4,8 @@
   roles:
     - role: ansible-sudoers
       sudoer_rewrite_sudoers_file: true
-      sudoer_remove_unauthorized_specs: true
-      sudoer_separate_specs: True
+      sudoer_remove_unauthorized_specs: false
+      sudoer_separate_specs: true
       sudoer_defaults:
         - "!visiblepw"
         - always_set_home
@@ -49,13 +49,6 @@
               - "%admin"
               - "%wheel"
       sudoer_specs:
-        - name: kitchen
-          comment: Allow Test-Kitchen user (kitchen) to execute any command without a password
-          users: kitchen
-          hosts: ALL
-          operators: ALL
-          commands: ALL
-          tags: NOPASSWD
         - name: admins
           comment: Members of one of the admin groups may gain root privileges.
           users: ADMINS

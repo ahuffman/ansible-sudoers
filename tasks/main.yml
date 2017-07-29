@@ -38,7 +38,8 @@
     mode: 0440
     validate: visudo -cf %s
   with_items: '{{ sudoer_specs }}'
-  when: "sudoer_separate_specs | bool"
+  when:
+    - sudoer_separate_specs | bool
 
 - name: Ensure the sudoers file is valid and up to date (separate specs)
   template:
@@ -49,8 +50,8 @@
     mode: 0440
     validate: visudo -cf %s
   when:
-    - "sudoer_separate_specs | bool"
-    - "sudoer_rewrite_sudoers_file | bool"
+    - sudoer_separate_specs | bool
+    - sudoer_rewrite_sudoers_file | bool
 
 - name: Check whether sudoers file supports seperate specs
   command: grep -c '#includedir /etc/sudoers.d' /etc/sudoers
@@ -66,7 +67,7 @@
     backup: yes
     validate: visudo -cf %s
   when:
-    - "sudoer_separate_specs | bool"
+    - sudoer_separate_specs | bool
     - sudoers_includes_separate_specs.stdout != "1"
 
 - name: Ensure the sudoers file is valid and up to date (specs all in one)
@@ -78,8 +79,8 @@
     mode: 0440
     validate: visudo -cf %s
   when:
-    - "not sudoer_separate_specs | bool"
-    - "sudoer_rewrite_sudoers_file | bool"
+    - not sudoer_separate_specs | bool
+    - sudoer_rewrite_sudoers_file | bool
 
 - name: Remove separate sudoer specs that are not authorized
   file:
@@ -87,8 +88,8 @@
     state: absent
   with_items: "{{ existing_sudoer_specs | difference(authorized_sudoer_specs) }}"
   when:
-    - "sudoer_separate_specs | bool"
-    - "sudoer_remove_unauthorized_specs | bool"
+    - sudoer_separate_specs | bool
+    - sudoer_remove_unauthorized_specs | bool
 
 - name: Remove separate sudoer specs if not using separate specs
   file:
@@ -96,5 +97,5 @@
     state: absent
   with_items: "{{ existing_sudoer_specs }}"
   when:
-    - "not sudoer_separate_specs | bool"
-    - "sudoer_remove_unauthorized_specs | bool"
+    - not sudoer_separate_specs | bool
+    - sudoer_remove_unauthorized_specs | bool
