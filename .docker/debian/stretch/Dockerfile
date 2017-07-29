@@ -21,7 +21,8 @@ RUN apt-get update \
  && if ! getent passwd <%= @username %>; then \
       useradd -d /home/<%= @username %> -m -s /bin/bash -p '*' <%= @username %>; \
     fi \
- && echo "<%= @username %> ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
+ && echo "<%= @username %> ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/kitchen \
+ && chmod 440 /etc/sudoers.d/kitchen \
  && echo "Defaults !requiretty" >> /etc/sudoers \
  && mkdir -p /home/<%= @username %>/.ssh \
  && chown -R <%= @username %> /home/<%= @username %>/.ssh \
