@@ -48,6 +48,8 @@
             users:
               - "%admin"
               - "%wheel"
+              - "%adm"
+              - "%sudo"
       sudoer_specs:
         - name: admins
           comment: Members of one of the admin groups may gain root privileges.

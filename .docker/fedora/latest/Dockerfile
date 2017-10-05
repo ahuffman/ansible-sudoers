@@ -21,8 +21,9 @@ RUN dnf clean all \
 	systemd \
  && pip install --upgrade pip \
  && dnf clean all \
+ && login_shell=$(command -v bash) \
  && if ! getent passwd <%= @username %>; then \
-      useradd -d /home/<%= @username %> -m -s /usr/bin/bash -p '*' <%= @username %>; \
+      useradd -u 9000 -d /home/<%= @username %> -m -s "${login_shell}" -p '*' <%= @username %>; \
     fi \
  && echo "<%= @username %> ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/kitchen \
  && chmod 440 /etc/sudoers.d/kitchen \
@@ -34,20 +35,21 @@ RUN dnf clean all \
  && chown <%= @username %> /home/<%= @username %>/.ssh/authorized_keys \
  && chmod 0600 /home/<%= @username %>/.ssh/authorized_keys \
  && export LANG="en_US.UTF-8" && echo "LANG=\"en_US.UTF-8\"" > /etc/locale.conf \
- && cd /lib/systemd/system/sysinit.target.wants/; ls | grep -v systemd-tmpfiles-setup | /usr/bin/xargs rm -f $1 \
- && /usr/bin/rm -f /lib/systemd/system/multi-user.target.wants/* \
- && /usr/bin/rm -f /etc/systemd/system/*.wants/* \
- && /usr/bin/rm -f /lib/systemd/system/local-fs.target.wants/* \
- && /usr/bin/rm -f /lib/systemd/system/sockets.target.wants/*udev* \
- && /usr/bin/rm -f /lib/systemd/system/sockets.target.wants/*initctl* \
- && /usr/bin/rm -f /lib/systemd/system/basic.target.wants/* \
- && /usr/bin/rm -f /lib/systemd/system/anaconda.target.wants/*  \
- && /usr/bin/rm -f /lib/systemd/system/plymouth* \
- && /usr/bin/rm -f /lib/systemd/system/systemd-update-utmp* \
+ && cd /lib/systemd/system/sysinit.target.wants/; ls | grep -v systemd-tmpfiles-setup | xargs rm -f $1 \
+ && rm -f /lib/systemd/system/multi-user.target.wants/* \
+ && rm -f /etc/systemd/system/*.wants/* \
+ && rm -f /lib/systemd/system/local-fs.target.wants/* \
+ && rm -f /lib/systemd/system/sockets.target.wants/*udev* \
+ && rm -f /lib/systemd/system/sockets.target.wants/*initctl* \
+ && rm -f /lib/systemd/system/basic.target.wants/* \
+ && rm -f /lib/systemd/system/anaconda.target.wants/*  \
+ && rm -f /lib/systemd/system/plymouth* \
+ && rm -f /lib/systemd/system/systemd-update-utmp* \
  && sed -ri 's/^#?PubkeyAuthentication\s+.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config \
  && sed -ri 's/^#?UsePrivilegeSeparation\s+.*/UsePrivilegeSeparation no/' /etc/ssh/sshd_config \
  && echo "UseDNS=no" >> /etc/ssh/sshd_config \
  && systemctl set-default multi-user.target \
+ && ln -s /lib/systemd/system/systemd-journald.service /etc/systemd/system/multi-user.target.wants/systemd-journald.service \
  && ln -s /lib/systemd/system/sshd.service /etc/systemd/system/multi-user.target.wants/sshd.service \
  && echo $'[Unit]\
 \nDescription=Finish boot up\
