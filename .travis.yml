@@ -1,21 +1,41 @@
----
-language: python
-python: "2.7"
+language: ruby
+rvm:
+  - 2.4
 
-sudo: false
+sudo: required
+services: docker
 
-addons:
-  apt:
-    packages:
-      - python-pip
+env:
+  global:
+    - ANSIBLE_VERSION=v2.3
+  matrix:
+# Split up the test-kitchen run to avoid exceeding 50 minutes:
+    - KITCHEN_REGEXP=fedora
+    - KITCHEN_REGEXP=debian
+    - KITCHEN_REGEXP=ubuntu
+
+before_install:
+  # Make sure everything's up to date.
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq python-apt python-pycurl git python-pip ruby ruby-dev build-essential autoconf
+  - gem install bundler
 
 install:
-  - pip install ansible
-  - ansible --version
-  - printf '[defaults]\nroles_path=../' >ansible.cfg
+  - bash test/ansible-setup.sh
+  - bundle install
+  - ~/.avm/v1.9/venv/bin/pip install netaddr ansible-lint
+  - ~/.avm/v2.2/venv/bin/pip install netaddr ansible-lint
+  - ~/.avm/v2.3/venv/bin/pip install netaddr ansible-lint
 
 script:
-  - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+  - ansible --version
+  - ruby --version
+  - python --version
+  - pip --version
+  - bundler --version
+  - bundle show
+  - ~/.avm/$ANSIBLE_VERSION/venv/bin/ansible-lint -v ./
+  - bundle exec kitchen test $KITCHEN_REGEXP
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

@@ -1,0 +1,75 @@
+---
+driver:
+  name: docker
+  use_sudo: false
+
+provisioner:
+  # name of the host
+  hosts: test-kitchen
+  # use an ansible playbook to provision our server
+  name: ansible_playbook
+  ansible_verbose: false
+  require_ansible_repo: false
+  require_ansible_omnibus: true
+  ansible_version: 2.3.1
+  require_chef_for_busser: false
+  sudo_command: sudo -E -H
+  idempotency_test: true
+  sudo: true
+
+transport:
+  max_ssh_sessions: 3
+
+platforms:
+  - name: ubuntu-xenial
+    driver_config:
+      run_command: /sbin/init
+      dockerfile: .docker/ubuntu/xenial/Dockerfile
+      platform: ubuntu
+      instance_name: test-role-ansible-sudoers-xenial
+      cap_add:
+        - SYS_ADMIN
+      volume:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      run_options:
+        tmpfs:
+        - /run
+  - name: debian-stretch
+    driver_config:
+      run_command: /lib/systemd/systemd
+      dockerfile: .docker/debian/stretch/Dockerfile
+      platform: debian
+      instance_name: test-role-ansible-sudoers-stretch
+      cap_add:
+        - SYS_ADMIN
+      volume:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      run_options:
+        tmpfs:
+        - /run
+  - name: fedora-latest
+    driver_config:
+      run_command: /lib/systemd/systemd
+      dockerfile: .docker/fedora/latest/Dockerfile
+      platform: fedora
+      instance_name: test-role-ansible-sudoers-fedora-latest
+      cap_add:
+        - SYS_ADMIN
+      volume:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      run_options:
+        tmpfs:
+        - /run
+
+verifier:
+  name: serverspec
+  sudo_path: true
+
+suites:
+  # suites found at /test/integration/$test-name
+  - name: default
+    verifier:
+      patterns:
+        - roles/ansible-sudoers/test/integration/default/serverspec/*_spec.rb
+      bundler_path: '/usr/local/bin'
+      rspec_path: '/usr/local/bin'
