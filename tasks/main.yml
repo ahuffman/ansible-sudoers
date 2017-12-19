@@ -53,11 +53,6 @@
     - sudoer_separate_specs | bool
     - sudoer_rewrite_sudoers_file | bool
 
-- name: Check whether sudoers file supports seperate specs
-  command: grep -c '#includedir /etc/sudoers.d' /etc/sudoers
-  register: sudoers_includes_separate_specs
-  changed_when: False
-
 - name: Make sudoers file supports seperate specs
   lineinfile:
     state: present
@@ -68,7 +63,6 @@
     validate: visudo -cf %s
   when:
     - sudoer_separate_specs | bool
-    - sudoers_includes_separate_specs.stdout != "1"
 
 - name: Ensure the sudoers file is valid and up to date (specs all in one)
   template:
