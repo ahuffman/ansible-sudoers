@@ -49,7 +49,7 @@
     - sudoer_separate_specs | bool
     - sudoer_rewrite_sudoers_file | bool
 
-- name: Make sudoers file supports seperate specs
+- name: Make sudoers file support seperate specs if not already replaced
   lineinfile:
     state: present
     dest: /etc/sudoers
