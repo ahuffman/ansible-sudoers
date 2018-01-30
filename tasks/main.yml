@@ -9,7 +9,7 @@
     path: /etc/sudoers.d
     owner: root
     group: root
-    mode: 0755
+    mode: 0750
     state: directory
 
 - name: Find all existing separate sudoer specs
