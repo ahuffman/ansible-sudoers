@@ -9,7 +9,7 @@
     path: /etc/sudoers.d
     owner: root
     group: root
-    mode: 0755
+    mode: 0750
     state: directory
 
 - name: Find all existing separate sudoer specs
@@ -19,13 +19,9 @@
     recurse: no
   register: existing_sudoer_spec_list
 
-- name: Get a list of all existing separate sudoer specs
+- name: Get a list of all existing and authorized separate sudoer specs
   set_fact:
-    existing_sudoer_specs: "{{ existing_sudoer_spec_list.files | map(attribute='path') | map('regex_replace','(.*\\/)(.*)','\\2') | list}}"
-  changed_when: False
-
-- name: Get a list of all authorized separate sudoer spec names
-  set_fact:
+    existing_sudoer_specs: "{{ existing_sudoer_spec_list.files | map(attribute='path') | map('basename') | list }}"
     authorized_sudoer_specs: "{{ sudoer_specs | map(attribute='name') | list }}"
   changed_when: False
 
@@ -36,7 +32,7 @@
     owner: root
     group: root
     mode: 0440
-    validate: visudo -cf %s
+    validate: 'visudo -cf %s'
   with_items: '{{ sudoer_specs }}'
   when:
     - sudoer_separate_specs | bool
@@ -48,12 +44,12 @@
     owner: root
     group: root
     mode: 0440
-    validate: visudo -cf %s
+    validate: 'visudo -cf %s'
   when:
     - sudoer_separate_specs | bool
     - sudoer_rewrite_sudoers_file | bool
 
-- name: Make sudoers file supports seperate specs
+- name: Make sudoers file support seperate specs if not already replaced
   lineinfile:
     state: present
     dest: /etc/sudoers
