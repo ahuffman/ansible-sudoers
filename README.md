@@ -198,9 +198,9 @@ defaults: string|[string]
 ## Role Variables
 - `sudoer_aliases`: a dictionary that specifies which aliases to configure
   - `sudoer_aliases.host`: a list of host alias descriptions
-  - `sudoer_aliases.user`: a list of host alias descriptions
-  - `sudoer_aliases.runas`: a list of host alias descriptions
-  - `sudoer_aliases.command`: a list of host alias descriptions
+  - `sudoer_aliases.user`: a list of user or group alias descriptions
+  - `sudoer_aliases.runas`: a list of runas alias descriptions
+  - `sudoer_aliases.command`: a list of command alias descriptions
 - `sudoer_specs`: a list of sudoer specifications
 - `sudoer_defaults`: a list of default settings
   - can be any of the following types
