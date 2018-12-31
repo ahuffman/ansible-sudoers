@@ -3,6 +3,9 @@
   package:
     name: "sudo"
     state: "present"
+  retries: "3"
+  register: "sudo_installed"
+  until: "sudo_installed is success"
 
 - name: "Ensure the sudoers.d directory is created"
   file:
