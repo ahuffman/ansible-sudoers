@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/hurricanehrndz/ansible-sudoers.svg?branch=master)](https://travis-ci.org/hurricanehrndz/ansible-sudoers)
-
 # wtcross.sudoers
 An Ansible role for configuring the /etc/sudoers file and /etc/sudoers.d files.
 
