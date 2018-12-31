@@ -1,7 +1,7 @@
-#{{ ansible_managed }}
+# {{ ansible_managed }}
 
 {% if item.comment is defined and item.comment %}
-#{{ item.comment }}
+# {{ item.comment }}
 {% endif %}
 {% if item.defaults is defined and item.defaults %}
 Defaults:{{ item.users | to_list | join(',') }} {{ item.defaults | to_list | join(',') }}
