@@ -5,7 +5,7 @@
     state: "present"
   retries: "3"
   register: "sudo_installed"
-  until: "sudo_installed is success"
+  until: "sudo_installed is succeeded"
 
 - name: "Ensure the sudoers.d directory is created"
   file:
