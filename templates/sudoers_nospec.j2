@@ -2,7 +2,7 @@
 
 {% for default in sudoer_defaults %}
 {% if default is mapping %}
-{% for name, values in default.iteritems() %}
+{% for name, values in default.items() %}
 {% for items in values | to_list | slice(6) %}
 {% if items %}
 Defaults    {{ name }} {% if not loop.first %}+{% endif %}= "{{ items | to_list | join(' ') }}"
