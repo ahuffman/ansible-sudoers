@@ -1,4 +1,4 @@
-# wtcross.sudoers
+# ahuffman.sudoers (formerly wtcross.sudoers)
 An Ansible role for configuring the `/etc/sudoers` file and `/etc/sudoers.d` files.
 
 This role makes it possible to completely define your sudoers configuration with Ansible. All of the following are configurable:
