@@ -45,7 +45,7 @@
     owner: "root"
     group: "root"
     mode: "0440"
-    validate: 'visudo -cf %s'
+    validate: '/usr/sbin/visudo -cf %s'
   with_items: "{{ sudoer_specs }}"
   when:
     - "sudoer_separate_specs"
@@ -58,7 +58,7 @@
     group: "root"
     mode: "0440"
     backup: "{{ sudoer_backup }}"
-    validate: 'visudo -cf %s'
+    validate: '/usr/sbin/visudo -cf %s'
   when:
     - "sudoer_separate_specs"
     - "sudoer_rewrite_sudoers_file"
@@ -70,7 +70,7 @@
     line: "#includedir /etc/sudoers.d"
     insertafter: "EOF"
     backup: "{{ sudoer_backup }}"
-    validate: 'visudo -cf %s'
+    validate: '/usr/sbin/visudo -cf %s'
   when:
     - "sudoer_separate_specs"
 
@@ -82,7 +82,7 @@
     group: "root"
     mode: "0440"
     backup: "{{ sudoer_backup }}"
-    validate: 'visudo -cf %s'
+    validate: '/usr/sbin/visudo -cf %s'
   when:
     - "not sudoer_separate_specs"
     - "sudoer_rewrite_sudoers_file"
