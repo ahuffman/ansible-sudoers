@@ -1,45 +1,75 @@
 ---
-sudoer_aliases: {}
-sudoer_specs: []
-sudoer_defaults:
-#  - requiretty
-  - "!visiblepw"
-  - always_set_home
-  - env_reset
-  - env_keep:
-    - COLORS
-    - DISPLAY
-    - HOSTNAME
-    - HISTSIZE
-    - INPUTRC
-    - KDEDIR
-    - LS_COLORS
-    - MAIL
-    - PS1
-    - PS2
-    - QTDIR
-    - USERNAME
-    - LANG
-    - LC_ADDRESS
-    - LC_CTYPE
-    - LC_COLLATE
-    - LC_IDENTIFICATION
-    - LC_MEASUREMENT
-    - LC_MESSAGES
-    - LC_MONETARY
-    - LC_NAME
-    - LC_NUMERIC
-    - LC_PAPER
-    - LC_TELEPHONE
-    - LC_TIME
-    - LC_ALL
-    - LANGUAGE
-    - LINGUAS
-    - _XKB_CHARSET
-    - XAUTHORITY
-  - secure_path: /sbin:/bin:/usr/sbin:/usr/bin
-sudoer_separate_specs: True
-sudoer_separate_specs_cleanup: False
-sudoer_rewrite_sudoers_file: True
-sudoer_remove_unauthorized_specs: False
-sudoer_backup: True
+sudoers_rewrite_default_sudoers_file: True
+sudoers_remove_unauthorized_included_files: False
+# backups occur on the ansible control node by fetching the remote files to prevent accidental inclusion in a includedir
+## The default sudoers_backup_path will be relative to the playbook execution path
+sudoers_backup: True
+sudoers_backup_path: "sudoers-backups"
+sudoers_visudo_path: "/usr/sbin/visudo"
+
+# A default RHEL7.6 /etc/sudoers configuration was used to define the defaults
+# Please check the defaults here to ensure you are applying sane settings for your OS
+sudoers_files:
+  - path: "/etc/sudoers"
+    defaults:
+      - "!visiblepw"
+      - "always_set_home"
+      - "match_group_by_gid"
+      - "always_query_group_plugin" # maintains sudo pre-1.8.15 group behavior
+      - "env_reset"
+      - secure_path:
+          - "/sbin"
+          - "/bin"
+          - "/usr/sbin"
+          - "/usr/bin"
+      - env_keep:
+          - "COLORS"
+          - "DISPLAY"
+          - "HOSTNAME"
+          - "HISTSIZE"
+          - "KDEDIR"
+          - "LS_COLORS"
+          - "MAIL"
+          - "PS1"
+          - "PS2"
+          - "QTDIR"
+          - "USERNAME"
+          - "LANG"
+          - "LC_ADDRESS"
+          - "LC_CTYPE"
+          - "LC_COLLATE"
+          - "LC_IDENTIFICATION"
+          - "LC_MEASUREMENT"
+          - "LC_MESSAGES"
+          - "LC_MONETARY"
+          - "LC_NAME"
+          - "LC_NUMERIC"
+          - "LC_PAPER"
+          - "LC_TELEPHONE"
+          - "LC_TIME"
+          - "LC_ALL"
+          - "LANGUAGE"
+          - "LINGUAS"
+          - "_XKB_CHARSET"
+          - "XAUTHORITY"
+    user_specifications:
+      - users:
+          - "root"
+        hosts:
+          - "ALL"
+        operators:
+          - "ALL"
+        commands:
+          - "ALL"
+      - users:
+          - "%wheel"
+        hosts:
+          - "ALL"
+        operators:
+          - "ALL"
+        commands:
+          - "ALL"
+    include_directories:
+      - "/etc/sudoers.d"
+    # include_files: []
+    # aliases: []

@@ -1,0 +1,110 @@
+# {{ ansible_managed }}
+{% if item.defaults is defined %}
+
+# Default specifications
+{% for default in item.defaults %}
+{% if default is mapping %}
+{% for name, values in default.items() %}
+{% if name == 'secure_path' %}
+Defaults    {{ name }} = {% for item in values %}{% if not loop.last %}{{ item }}:{% else %}{{ item }}{% endif %}{% endfor %}
+
+{% else %}
+{% for items in values | list | slice(6) %}
+{% if items %}
+Defaults    {{ name }} {% if not loop.first %}+{% endif %}= "{{ items | list | join(' ') }}"
+{% endif -%}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% elif default | first == ':' %}
+Defaults{{ default }}
+{% else %}
+Defaults    {{ default }}
+{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if item.aliases is defined %}
+# Alias specifications
+{% if item.aliases.cmnd_alias is defined %}
+## Command Aliases
+{% for ca in item.aliases.cmnd_alias %}
+Cmnd_Alias    {{ ca.name }} = {% for cmnd in ca.commands %}{% if not loop.last %}{{ cmnd }}, {% else %}{{ cmnd }}{% endif %}{% endfor %}
+
+{% endfor %}
+
+{% endif %}
+{% if item.aliases.host_alias is defined %}
+## Host Aliases
+{% for ha in item.aliases.host_alias %}
+Host_Alias    {{ ha.name }} = {% for host in ha.hosts %}{% if not loop.last %}{{ host }}, {% else %}{{ host }}{% endif %}{% endfor %}
+
+{% endfor %}
+
+{% endif %}
+{% if item.aliases.runas_alias is defined %}
+## Runas Aliases
+{% for ra in item.aliases.runas_alias %}
+Runas_Alias    {{ ra.name }} = {% for user in ra.users %}{% if not loop.last %}{{ user }}, {% else %}{{ user }}{% endif %}{% endfor %}
+
+{% endfor %}
+
+{% endif %}
+{% if item.aliases.user_alias is defined %}
+## User Aliases
+{% for ua in item.aliases.user_alias %}
+User_Alias    {{ ua.name }} = {% for user in ua.users %}{% if not loop.last %}{{ user }}, {% else %}{{ user }}{% endif %}{% endfor %}
+
+{% endfor %}
+
+{% endif %}
+{% endif %}
+{% if item.user_specifications is defined %}
+{% if item.user_specifications | json_query('[?!type]') | flatten | length > 0 %}
+# User specifications
+{% for spec in item.user_specifications %}
+{% if spec.type is undefined %}
+{% for user in spec.users %}{% if not loop.last %}{{ user }}, {% else %}{{ user }}{% endif %}{% endfor %} {% for host in spec.hosts %}{% if not loop.last %}{{ host }}, {% else %}{{ host }}{% endif %}{% endfor %}={% if spec.operators is defined %}({% for op in spec.operators %}{% if not loop.last%}{{ op }}, {% else %}{{ op }}{% endif %}{% endfor %}){% endif %} {% if spec.selinux_type is defined %}TYPE={% for type in spec.selinux_type %}{% if not loop.last %}{{ type }}, {% else %}{{ type }} {% endif %}{% endfor %}{% endif %}{% if spec.selinux_role is defined %}ROLE={% for role in spec.selinux_role %}{% if not loop.last %}{{ role }}, {% else %}{{ role }} {% endif %}{% endfor %}{% endif %}{% if spec.solaris_privs is defined %}PRIVS={% for priv in spec.solaris_privs %}{% if not loop.last %}{{ priv }}, {% else %}{{ priv }} {% endif %}{% endfor %}{% endif %}{% if spec.solaris_limitprivs is defined %}LIMITPRIVS={% for lpriv in spec.solaris_limitprivs %}{% if not loop.last %}{{ lpriv }}, {% else %}{{ lpriv }} {% endif %}{% endfor %}{% endif %}{% if spec.tags is defined %}{% for tag in spec.tags %}{{ tag }}:{% endfor %} {% endif %}{% for cmnd in spec.commands %}{% if not loop.last %}{{ cmnd }}, {% else %}{{ cmnd }}{% endif %}{% endfor %}
+
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% endif %}
+{% if item.user_specifications | json_query('[*].defaults') | flatten | length > 0 %}
+# Default override specifications
+{% for spec in item.user_specifications %}
+{% if spec.type is defined %}
+{% if spec.type == 'user'%}
+Defaults:{% for user in spec.users %}{% if not loop.last %}{{ user }}, {% else %}{{ user }} {% endif %}{% endfor %}{% for default in spec.defaults %}{% if not loop.last %}{{ default }}, {% else %}{{ default }}{% endif %}{% endfor %}
+
+{% elif spec.type == 'runas' %}
+Defaults>{% for op in spec.operators %}{% if not loop.last %}{{ op }}, {% else %}{{ op }} {% endif %}{% endfor %}{% for default in spec.defaults %}{% if not loop.last %}{{ default }}, {% else %}{{ default }}{% endif %}{% endfor %}
+
+{% elif spec.type == 'host' %}
+Defaults@{% for host in spec.hosts %}{% if not loop.last %}{{ host }}, {% else %}{{ host }} {% endif %}{% endfor %}{% for default in spec.defaults %}{% if not loop.last %}{{ default }}, {% else %}{{ default }}{% endif %}{% endfor %}
+
+{% elif spec.type == 'command' %}
+Defaults!{% for cmnd in spec.commands %}{% if not loop.last %}{{ cmnd }}, {% else %}{{ cmnd }} {% endif %}{% endfor %}{% for default in spec.defaults %}{% if not loop.last %}{{ default }}, {% else %}{{ default }}{% endif %}{% endfor %}
+
+{% endif %}
+{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if item.include_files is defined or item.include_directories is defined %}
+# Includes
+{% if item.include_files is defined and item.include_files | length > 0 %}
+## Include files
+{% for file in item.include_files %}
+#include {{ file }}
+{% endfor %}
+
+{% endif %}
+{% if item.include_directories is defined and item.include_directories | length > 0 %}
+## Include directories
+{% for dir in item.include_directories %}
+#includedir {{ dir }}
+{% endfor %}
+{% endif %}
+{% endif %}

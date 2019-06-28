@@ -6,101 +6,124 @@
   retries: "3"
   register: "sudo_installed"
   until: "sudo_installed is succeeded"
+  become: True
 
-- name: "Ensure the sudoers.d directory is created"
+- name: "Set include directories variable"
+  set_fact:
+    sudoers_include_dirs: "{{ sudoers_files | json_query('[*].include_directories') | flatten }}"
+
+- name: "Set sudoer file paths variable"
+  set_fact:
+    sudoers_file_paths: "{{ sudoers_files | json_query('[*].path') | flatten }}"
+
+- name: "Display all sudoers include directories"
+  debug:
+    var: "sudoers_include_dirs"
+    verbosity: "1"
+
+- name: "Display all sudoers file paths"
+  debug:
+    var: "sudoers_file_paths"
+    verbosity: "1"
+
+- name: "Ensure include directories are created"
   file:
-    path: "/etc/sudoers.d"
+    path: "{{ item }}"
     owner: "root"
     group: "root"
     mode: "0750"
     state: "directory"
+  with_items: "{{ sudoers_include_dirs }}"
+  become: True
+  when: "sudoers_include_dirs | length > 0"
 
-- name: "Find all existing separate sudoer specs"
-  find:
-    paths: "/etc/sudoers.d"
-    file_type: "file"
-    recurse: False
-  register: "existing_sudoer_spec_list"
-
-- name: "Get a list of all existing and authorized separate sudoer specs"
-  set_fact:
-    existing_sudoer_specs: "{{ existing_sudoer_spec_list.files | map(attribute='path') | map('basename') | list }}"
-    authorized_sudoer_specs: "{{ sudoer_specs | map(attribute='name') | list }}"
-  changed_when: False
-
-- name: "Output existing separate sudoer specs"
-  debug:
-    var: "existing_sudoer_specs"
-    verbosity: "1"
-
-- name: "Output role variable defined authorized sudoer specs"
-  debug:
-    var: "authorized_sudoer_specs"
-    verbosity: "1"
-
-- name: "Ensure all authorized separate sudoer specs are properly configured"
-  template:
-    src: "sudoer_spec.j2"
-    dest: "/etc/sudoers.d/{{ item.name }}"
-    owner: "root"
-    group: "root"
-    mode: "0440"
-    validate: 'visudo -cf %s'
-  with_items: "{{ sudoer_specs }}"
-  when:
-    - "sudoer_separate_specs"
-
-- name: "Ensure the sudoers file is valid and up to date | sudoers separate specs"
-  template:
-    src: "sudoers_nospec.j2"
-    dest: "/etc/sudoers"
-    owner: "root"
-    group: "root"
-    mode: "0440"
-    backup: "{{ sudoer_backup }}"
-    validate: 'visudo -cf %s'
-  when:
-    - "sudoer_separate_specs"
-    - "sudoer_rewrite_sudoers_file"
-
-- name: "Ensure existing sudoers file supports seperate specs"
-  lineinfile:
-    state: "present"
-    dest: "/etc/sudoers"
-    line: "#includedir /etc/sudoers.d"
-    insertafter: "EOF"
-    backup: "{{ sudoer_backup }}"
-    validate: 'visudo -cf %s'
-  when:
-    - "sudoer_separate_specs"
-
-- name: "Ensure the sudoers file is valid and up to date | omnibus sudoers"
-  template:
-    src: "sudoers_plus_spec.j2"
-    dest: "/etc/sudoers"
-    owner: "root"
-    group: "root"
-    mode: "0440"
-    backup: "{{ sudoer_backup }}"
-    validate: 'visudo -cf %s'
-  when:
-    - "not sudoer_separate_specs"
-    - "sudoer_rewrite_sudoers_file"
-
-- name: "Remove separate sudoer specs that are not authorized"
+# We want to pull the remote sudoer files to the ansible control node
+##  To prevent includedirs from accidentally activating backed up copies
+- name: "Ensure local backup directory exists"
   file:
-    path: "/etc/sudoers.d/{{ item }}"
-    state: "absent"
-  with_items: "{{ existing_sudoer_specs | difference(authorized_sudoer_specs) }}"
+    state: "directory"
+    path: "{{ sudoers_backup_path }}"
+    owner: "{{ ansible_user }}"
+    group: "root"
+    mode: "0755"
+  become: True
+  delegate_to: "localhost"
+  connection: "local"
   when:
-    - "sudoer_separate_specs"
-    - "sudoer_remove_unauthorized_specs"
+    - "sudoers_backup | bool"
+    - "sudoers_backup_path != ''"
 
-- name: "Remove separate sudoer specs if not using separate specs"
-  file:
-    path: "/etc/sudoers.d/{{ item }}"
-    state: "absent"
-  with_items: "{{ existing_sudoer_specs }}"
+- name: "Backup sudoers files"
+  fetch:
+    dest: "{{ sudoers_backup_path }}"
+    fail_on_missing: False
+    src: "{{ item }}"
+  with_items: "{{ sudoers_file_paths }}"
+  become: True
   when:
-    - "not sudoer_separate_specs"
-    - "sudoer_separate_specs_cleanup"
+    - "sudoers_backup | bool"
+    - "sudoers_backup_path != ''"
+
+# included files get created first, because if using #include <file>
+##   visudo will not validate since the file does not exist yet (if new)
+- name: "Ensure sudoers include files are configured"
+  template:
+    src: "sudoers.j2"
+    dest: "{{ item.path }}"
+    owner: "root"
+    group: "root"
+    mode: "0440"
+    validate: '{{ sudoers_visudo_path }} -cf %s'
+  with_items: "{{ sudoers_files }}"
+  become: True
+  loop_control:
+    label: "{{ item.path }}"
+  when: "item.path != '/etc/sudoers'"
+
+- name: "Ensure /etc/sudoers is configured"
+  template:
+    src: "sudoers.j2"
+    dest: "/etc/sudoers"
+    owner: "root"
+    group: "root"
+    mode: "0440"
+    validate: '{{ sudoers_visudo_path }} -cf %s'
+  with_items: "{{ sudoers_files }}"
+  become: True
+  loop_control:
+    label: "{{ item.path }}"
+  when:
+    - "item.path == '/etc/sudoers'"
+    - "sudoers_rewrite_default_sudoers_file | bool"
+
+# cleanup files in include_dirs that aren't listed in sudoers_files
+- name: "Remove unauthorized included sudoer files"
+  block:
+    - name: "Search for sudoer files in included directories"
+      find:
+        paths: "{{ sudoers_include_dirs }}"
+        recurse: True
+        hidden: True
+        file_type: "any"
+      register: "sudoers_existing_included_files"
+
+    - name: "Set unauthorized included sudoers files variable"
+      set_fact:
+        sudoers_unauthorized_files: "{{ sudoers_existing_included_files | json_query('files[*].path') |
+            difference(sudoers_file_paths) }}"
+
+    - name: "Display unauthorized sudoers include files to be removed"
+      debug:
+        var: "sudoers_unauthorized_files"
+        verbosity: "1"
+
+    - name: "Remove unauthorized included sudoers files"
+      file:
+        path: "{{ item }}"
+        state: "absent"
+      with_items: "{{ sudoers_unauthorized_files }}"
+      when: "sudoers_unauthorized_files | length > 0"
+  become: True
+  when:
+    - "sudoers_remove_unauthorized_included_files | bool"
+    - "sudoers_include_dirs | length > 0"

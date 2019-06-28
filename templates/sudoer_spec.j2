@@ -1,9 +1,0 @@
-# {{ ansible_managed }}
-
-{% if item.comment is defined and item.comment %}
-# {{ item.comment }}
-{% endif %}
-{% if item.defaults is defined and item.defaults %}
-Defaults:{{ item.users | to_list | join(',') }} {{ item.defaults | to_list | join(',') }}
-{% endif %}
-{{ item.users | to_list | join(',') }} {{ item.hosts | to_list | join(',') }}={% if item.operators is defined and item.operators %}({{ item.operators | to_list | join(',') }}){% endif %} {% if item.tags is defined and item.tags %}{{ item.tags | to_list | join(':') }}: {% endif %}{{ item.commands | to_list | join(',') }}

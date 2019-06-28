@@ -1,41 +1,75 @@
 galaxy_info:
   role_name: "sudoers"
   author:
-    - Tyler Cross
-    - Andrew J. Huffman
+    - "Andrew J. Huffman"
+    - "Tyler Cross"
   company: "Red Hat"
-  description: Controls the configuration of the sudoers file and /etc/sudoers.d/ files
-  issue_tracker_url: https://github.com/wtcross/ansible-sudoers/issues
-  license: MIT
-  min_ansible_version: 2.3
-  #github_branch: master
+  description: "Controls the configuration of the default /etc/sudoers file and included files/directories"
+  license: "MIT"
+  min_ansible_version: 2.5
   platforms:
-    - name: EL
+    - name: "EL"
       versions:
-        - all
-    - name: Fedora
+        - "all"
+    - name: "Alpine"
       versions:
-        - all
-    - name: opensuse
+        - "all"
+    - name: "Amazon"
       versions:
-        - all
-    - name: Amazon
+        - "all"
+    - name: "ArchLinux"
       versions:
-        - all
-    - name: Ubuntu
+        - "all"
+    - name: "ClearLinux"
       versions:
-        - all
-    - name: SLES
+        - "all"
+    - name: "Debian"
       versions:
-        - all
-    - name: Debian
+        - "all"
+    - name: "DragonFlyBSD"
       versions:
-        - all
+        - "all"
+    - name: "Fedora"
+      versions:
+        - "all"
+    - name: "FreeBSD"
+      versions:
+        - "all"
+    - name: "GenericLinux"
+      versions:
+        - "all"
+    - name: "GenericBSD"
+      versions:
+        - "all"
+    - name: "Gentoo"
+      versions:
+        - "all"
+    - name: "HardenedBSD"
+      versions:
+        - "all"
+    - name: "macOS"
+      versions:
+        - "all"
+    - name: "OpenBSD"
+      versions:
+        - "all"
+    - name: "opensuse"
+      versions:
+        - "all"
+    - name: "SLES"
+      versions:
+        - "all"
+    - name: "Solaris"
+      versions:
+        - "all"
+    - name: "Ubuntu"
+      versions:
+        - "all"
 
   galaxy_tags:
-    - sudo
-    - sudoers
-    - admin
-    - system
+    - "sudo"
+    - "sudoers"
+    - "admin"
+    - "system"
 
 dependencies: []
