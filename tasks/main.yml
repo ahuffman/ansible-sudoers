@@ -43,10 +43,7 @@
   file:
     state: "directory"
     path: "{{ sudoers_backup_path }}"
-    owner: "{{ ansible_user }}"
-    group: "root"
     mode: "0755"
-  become: True
   delegate_to: "localhost"
   connection: "local"
   when:
