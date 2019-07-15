@@ -44,7 +44,6 @@
     state: "directory"
     path: "{{ sudoers_backup_path }}"
     mode: "0755"
-  become: True
   delegate_to: "localhost"
   connection: "local"
   when:
