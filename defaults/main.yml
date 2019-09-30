@@ -14,8 +14,8 @@ sudoers_files:
     defaults:
       - "!visiblepw"
       - "always_set_home"
-      - "match_group_by_gid"
-      - "always_query_group_plugin" # maintains sudo pre-1.8.15 group behavior
+      - "match_group_by_gid"        # NOTE: for sudo>=1.8.18
+      - "always_query_group_plugin" # NOTE: maintains sudo pre-1.8.15 group behavior
       - "env_reset"
       - secure_path:
           - "/sbin"
