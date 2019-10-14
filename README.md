@@ -53,6 +53,7 @@ The defaults defined for this role are based on a default RHEL7.6 `/etc/sudoers`
 | sudoers_backup_path | Path relative to where you are executing your playbook to backup the remote copies of defined `sudoers_files` to. | "sudoers_backups" | string |
 | sudoers_visudo_path | Fully-qualified path to the `visudo` binary required for validation of sudoers configuration changes. Added for Operating System compatibility. | "/usr/sbin/visudo" | string |
 | sudoers_files | Definition of all your sudoers configurations | see [defaults/main.yml](defaults/main.yml)| list of dictionaries |
+| sudoers_root_group | Group to be used when creating and verifying files | "wheel" on macOS and "root" everywhere else | string |
 
 ## sudoers_files Dictionary Fields
 | Variable Name | Description | Variable Type |
