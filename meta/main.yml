@@ -3,6 +3,8 @@ galaxy_info:
   author:
     - "Andrew J. Huffman"
     - "Tyler Cross"
+    - "Carrol Cox"
+    - "Thiago Alves"
   company: "Red Hat"
   description: "Controls the configuration of the default /etc/sudoers file and included files/directories"
   license: "MIT"
