@@ -1,4 +1,12 @@
 ---
+- name: Define root group
+  vars:
+    distribution_groups:
+      MacOSX: wheel
+  set_fact:
+    sudoers_root_group: "{{ distribution_groups[ansible_distribution] | default('root') }}"
+  when: sudoers_root_group is not defined
+
 - name: "Ensure sudo is installed"
   package:
     name: "sudo"
@@ -6,6 +14,7 @@
   retries: "3"
   register: "sudo_installed"
   until: "sudo_installed is succeeded"
+  when: ansible_distribution != 'MacOSX'
   become: True
 
 - name: "Set include directories variable"
@@ -30,7 +39,7 @@
   file:
     path: "{{ item }}"
     owner: "root"
-    group: "root"
+    group: "{{ sudoers_root_group }}"
     mode: "0750"
     state: "directory"
   with_items: "{{ sudoers_include_dirs }}"
@@ -68,7 +77,7 @@
     src: "sudoers.j2"
     dest: "{{ item.path }}"
     owner: "root"
-    group: "root"
+    group: "{{ sudoers_root_group }}"
     mode: "0440"
     validate: '{{ sudoers_visudo_path }} -cf %s'
   with_items: "{{ sudoers_files }}"
@@ -82,7 +91,7 @@
     src: "sudoers.j2"
     dest: "/etc/sudoers"
     owner: "root"
-    group: "root"
+    group: "{{ sudoers_root_group }}"
     mode: "0440"
     validate: '{{ sudoers_visudo_path }} -cf %s'
   with_items: "{{ sudoers_files }}"
