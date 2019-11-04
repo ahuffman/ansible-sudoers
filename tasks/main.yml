@@ -55,6 +55,7 @@
     mode: "0755"
   delegate_to: "localhost"
   connection: "local"
+  become: False
   when:
     - "sudoers_backup | bool"
     - "sudoers_backup_path != ''"
