@@ -51,6 +51,7 @@ The defaults defined for this role are based on a default RHEL7.6 `/etc/sudoers`
 | sudoers_remove_unauthorized_included_files | ***Very Dangerous!*** Each existing sudoer file found in the `include_directories` dictionary which have not been defined in `sudoers_files` will be removed. This allows for enforcing a desired state. | False | boolean |
 | sudoers_backup | Whether or not to create a backup of the current state of the existing `/etc/sudoers` file as well as any files defined in `sudoers_files`.  The files get backed up to the Ansible control node (Server you are executing Ansible from) and avoids accidentally leaving files behind in your `include_directories` that may be evaluated by the sudoers configuration(s).| True | boolean |
 | sudoers_backup_path | Path relative to where you are executing your playbook to backup the remote copies of defined `sudoers_files` to. | "sudoers_backups" | string |
+| sudoers_backup_become | Whether or not to use sudo when creating local sudoers backup directory and sudoers file backups | True | boolean |
 | sudoers_visudo_path | Fully-qualified path to the `visudo` binary required for validation of sudoers configuration changes. Added for Operating System compatibility. | "/usr/sbin/visudo" | string |
 | sudoers_files | Definition of all your sudoers configurations | see [defaults/main.yml](defaults/main.yml)| list of dictionaries |
 

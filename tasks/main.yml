@@ -54,6 +54,7 @@
     path: "{{ sudoers_backup_path }}"
     mode: "0755"
   delegate_to: "localhost"
+  become: "{{ sudoers_backup_become | default(True) | bool }}"
   connection: "local"
   when:
     - "sudoers_backup | bool"
@@ -65,7 +66,7 @@
     fail_on_missing: False
     src: "{{ item }}"
   with_items: "{{ sudoers_file_paths }}"
-  become: True
+  become: "{{ sudoers_backup_become | default(True) | bool }}"
   when:
     - "sudoers_backup | bool"
     - "sudoers_backup_path != ''"
