@@ -1,11 +1,7 @@
 galaxy_info:
   role_name: "sudoers"
-  author:
-    - "Andrew J. Huffman"
-    - "Tyler Cross"
-    - "Carrol Cox"
-    - "Thiago Alves"
-  company: "Red Hat"
+  author: "Andrew J. Huffman, Tyler Cross, Carrol Cox, Thiago Alves"
+  company: ""
   description: "Controls the configuration of the default /etc/sudoers file and included files/directories"
   license: "MIT"
   min_ansible_version: 2.5

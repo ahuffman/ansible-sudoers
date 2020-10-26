@@ -5,6 +5,7 @@ sudoers_remove_unauthorized_included_files: False
 ## The default sudoers_backup_path will be relative to the playbook execution path
 sudoers_backup: True
 sudoers_backup_path: "sudoers-backups"
+sudoers_backup_become: True
 sudoers_visudo_path: "/usr/sbin/visudo"
 
 # A default RHEL7.6 /etc/sudoers configuration was used to define the defaults
