@@ -66,7 +66,7 @@
     fail_on_missing: False
     src: "{{ item }}"
   with_items: "{{ sudoers_file_paths }}"
-  become: "{{ sudoers_backup_become | default(True) | bool }}"
+  become: True
   when:
     - "sudoers_backup | bool"
     - "sudoers_backup_path != ''"
