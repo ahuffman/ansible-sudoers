@@ -1,3 +1,5 @@
+![Ansible Role](https://img.shields.io/ansible/role/d/38958)
+
 # ahuffman.sudoers
 
 Controls the configuration of the default `/etc/sudoers` file and included files/directories.
